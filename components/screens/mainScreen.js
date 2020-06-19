@@ -2,19 +2,27 @@ import React ,{useState,useEffect} from 'react'
 import {Text} from 'react-native'
 import { Appbar,TextInput,Button } from 'react-native-paper'
 import firebase from '../../fb'
+import {FlatList} from 'react-native'
+import Todos from './Todos'
 
 function Todo(){
 
     const [task,setTask] = useState('');
     const [description,setDescription] = useState('')
 
-    const db = firebase.database().ref()
+    const [tasks,setTasks] = useState([]);
+    const db = firebase.database().ref('tasks/')
 
-    // useEffect(()=>{
-    //     return db.on('value',(snapshot)=>{
-    //         console.log(snapshot) 
-    //     })
-    // })
+    useEffect(()=>{
+        return db.on('value',(snapshot)=>{
+            const list=[];
+            snapshot.forEach(doc=>{
+                list.push({doc})
+            })
+            console.log() 
+            setTasks(list)
+        })
+    },[])
 
 
 
@@ -34,6 +42,13 @@ function Todo(){
         <Appbar>
             <Appbar.Content title={"Task App"}/>
         </Appbar>
+        <FlatList
+            style={{flex: 1,width:'100%'}}
+            data={tasks}
+            keyExtractor={(item)=>item.key}
+            renderItem={({item})=><Todos {...item}/>}
+        />
+
         <Text>Task: {task}</Text>
         <Text>Description: {description}</Text>
         <TextInput label={'new task'} value={task} onChangeText={setTask}/>
