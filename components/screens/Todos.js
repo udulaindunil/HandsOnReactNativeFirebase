@@ -32,6 +32,10 @@ function Todos({doc}){
             <List.Item
                 title={doc.val().task}
                 description={doc.val().description}
+                onPress={()=>toggleComplete()}
+                left = {props=>(
+                    <List.Icon {...props} icon={doc.val().complete ? 'check': 'cancel'}/>
+                )}
                 />
         </Swipeout>
     );
